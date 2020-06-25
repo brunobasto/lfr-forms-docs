@@ -5,13 +5,15 @@ order: 9
 title: "Layout Provider"
 ---
 
-# What is it?
-
-## Draft
-
 # Localização
 
-Você pode encontrar códigos do User View no módulo `dynamic-data-mapping-form-renderer` e a parte do Builder, analogamente ao módulo `dynamic-data-mapping-form-builder` assim como a parte de Regras.
+O LayoutProvider se localiza no módulo do `dynamic-data-mapping-form-builder` mas é aplicado em todas as aplicações que estão usando o Forms.
+
+# O que resolve?
+
+Basicamente é o componente pai comum a todos, como exemplos de filhos temos o FormBuilder, RuleBuilder, FormRenderer, que tem responsabilidade de armazenar a fonte única da verdade da aplicação e também de ter implementado como que uma determinada ação disparada em qualquer parte da aplicação irá persistir os dados nessa store.
+
+Para isso, se faz o uso de visitors(iremos falar mais sobre isso na parte de [Visitors](#visitors)) como função de apoio para obter dados da estrutura do Forms e persistir-los.
 
 # Como funciona a integração do Form Builder com a User View?
 
@@ -42,11 +44,49 @@ this.on(‘fieldAdded’, payload => {
 
     // Realiza a operação de adicionar um field no local especificado pelo evento
     pages[pageIndex].rows[rowIndex].columns[columnIndex].fields.push(createField(fieldType));
-    
+
     // Atualiza estado da aplicação. Isso faz com que haja uma renderização da aplicação e o novo field deverá aparecer no Form Builder
     this.setState({pages});
 })
 ```
 
-No Forms, existem várias ações disponíveis. Você terá mais detalhes na parte de LayoutProvider(#9).
+Isso fará com que o a função de handling do evento para a ação desejada seja acionado dentro do LayoutProvider provocando assim uma alteração de estado da store.
 
+No Forms, existem várias ações disponíveis, esses são alguns exemplos de ações disponíveis no LayoutProvider:
+
+```text
+activePageUpdated
+columnResized
+elementSetAdded
+fieldAdded
+fieldBlurred
+fieldChangesCanceled
+fieldClicked
+fieldDeleted
+fieldDuplicated
+fieldEdited
+fieldHovered
+fieldMoved
+fieldSetAdded
+focusedFieldEvaluationEnded
+languageIdDeleted
+pageAdded
+pageDeleted
+pageReset
+pagesSwapped
+pagesUpdated
+paginationItemClicked
+paginationModeUpdated
+paginationNextClicked
+paginationPreviousClicked
+ruleAdded
+ruleDeleted
+ruleEdited
+ruleSaved
+ruleValidatorChanged
+sectionAdded
+sidebarFieldBlurred
+successPageChanged
+```
+
+Veja https://github.com/liferay/liferay-portal/blob/master/modules/apps/dynamic-data-mapping/dynamic-data-mapping-form-builder/src/main/resources/META-INF/resources/js/components/LayoutProvider/LayoutProvider.es.js#L84 para mais exemplos.
